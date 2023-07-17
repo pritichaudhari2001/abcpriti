@@ -399,9 +399,53 @@ plt.show()
                 </code>
             </div>
         </div>
-                   
-                    
+         <div class="code-box">
+        <h3>Write program for linear regression and find parameters like Sum of 
+         Squared Errors (SSE), Total Sum of Squares (SST), R2, Adjusted R2etc.</h3>
+            <h4>Code 9</h4>
+            <div class="code">
+                <code>
+        import pandas as pd
+import statsmodels.api as sm
+import numpy as np
 
-    </div>
+df = pd.DataFrame({
+    'hours': (1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 7, 7, 8),
+    'score': (68, 76, 74, 80, 76, 78, 81, 84, 86, 83, 88, 85, 89, 94, 93, 94, 96, 89, 92, 97)
+})
+
+# View first six rows of the data frame
+df.head()
+
+# Define response variable
+y = df['score']
+
+# Define predictor variable
+x = df[['hours']]
+
+# Add constant to predictor variables
+x = sm.add_constant(x)
+
+# Fit linear regression model
+model = sm.OLS(y, x).fit()
+
+# Calculate SSE
+sse = np.sum((model.fittedvalues - df.score) ** 2)
+print(sse)
+
+# Calculate SSR
+ssr = np.sum((model.fittedvalues - df.score.mean()) ** 2)
+print(ssr)
+
+# Calculate SST
+sst = ssr + sse
+print(sst)
+                </code>
+            </div>
+         </div>
+    
+                
+              
+      </div>
 </body>
 </html>
