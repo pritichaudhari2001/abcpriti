@@ -484,12 +484,245 @@ X_principal.columns = ['P1', 'P2']
 plt.figure(figsize=(8, 8))
 plt.title('Visualising the data')
 Dendrogram = shc.dendrogram((shc.linkage(X_principal, method='ward')))
+ac2 = AgglomerativeClustering(n_clusters = 2)
+# Visualizing the clustering
+plt.figure(figsize =(6, 6))
+plt.scatter(X_principal['P1'], X_principal['P2'],
+c = ac2.fit_predict(X_principal), cmap ='rainbow')
+plt.show()
+
+ac3 = AgglomerativeClustering(n_clusters = 3)
+plt.figure(figsize =(6, 6))
+plt.scatter(X_principal['P1'], X_principal['P2'],
+c = ac3.fit_predict(X_principal), cmap ='rainbow')
+plt.show()
+
+ac4 = AgglomerativeClustering(n_clusters = 4)
+plt.figure(figsize =(6, 6))
+plt.scatter(X_principal['P1'], X_principal['P2'],
+c = ac4.fit_predict(X_principal), cmap ='rainbow')
+plt.show()
+
+ac5 = AgglomerativeClustering(n_clusters = 5)
+plt.figure(figsize =(6, 6))
+plt.scatter(X_principal['P1'], X_principal['P2'],
+c = ac5.fit_predict(X_principal), cmap ='rainbow')
+plt.show()
+
+ac6 = AgglomerativeClustering(n_clusters = 6)
+plt.figure(figsize =(6, 6))
+plt.scatter(X_principal['P1'], X_principal['P2'],
+c = ac6.fit_predict(X_principal), cmap ='rainbow')
+plt.show()
+
+k = [2, 3, 4, 5, 6]
+# Appending the silhouette scores of the different models to the list
+silhouette_scores = []
+silhouette_scores.append(
+silhouette_score(X_principal, ac2.fit_predict(X_principal)))
+silhouette_scores.append(
+silhouette_score(X_principal, ac3.fit_predict(X_principal)))
+silhouette_scores.append(
+silhouette_score(X_principal, ac4.fit_predict(X_principal)))
+silhouette_scores.append(
+silhouette_score(X_principal, ac5.fit_predict(X_principal)))
+silhouette_scores.append(silhouette_score(X_principal, ac6.fit_predict(X_principal)))
+
+# Plotting a bar graph to compare the results
+plt.bar(k, silhouette_scores)
+plt.xlabel('Number of clusters', fontsize = 20)
+plt.ylabel('S(i)', fontsize = 20)
+plt.show()                    
                 </code>
             </div>
          </div>
+                 <div class="code-box">
+        <h3>.Write a program for Fuzzy c-means clustering in python</h3>
+            <h4>Code 11</h4>
+            <div class="code">
+                <code>
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+
+# Generate some example data
+np.random.seed(0)
+data = np.random.rand(100, 2)
+
+# Define the number of clusters
+n_clusters = 3
+
+# Apply fuzzy c-means clustering
+cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(data.T, n_clusters, 2, error=0.005, maxiter=1000, init=None)
+
+# Predict cluster membership for each data point
+cluster_membership = np.argmax(u, axis=0)
+
+# Print the cluster centers
+print('Cluster Centers:', cntr)
+
+# Print the cluster membership for each data point
+print('Cluster Membership:', cluster_membership)  
+                </code>
+            </div>
+         </div>
+        <div class="code-box">
+        <h3>Implement the non-parametric Locally Weighted Regression algorithm in 
+            order to fit data points. Select appropriate data set for your experiment and 
+            draw graphs.</h3>
+            <h4>Code 12</h4>
+            <div class="code">
+                <code>
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+def kernel(point, xmat, k):
+    m, n = np.shape(xmat)
+    weights = np.mat(np.eye(m))
     
-                
-              
-      </div>
+    for j in range(m):
+        diff = point - xmat[j]
+        weights[j, j] = np.exp(diff * diff.T / (-2.0 * k ** 2))
+    
+    return weights
+
+def localWeight(point, xmat, ymat, k):
+    wei = kernel(point, xmat, k)
+    W = (xmat.T * (wei * xmat)).I * (xmat.T * (wei * ymat.T))
+    
+    return W
+
+def localWeightRegression(xmat, ymat, k):
+    m, n = np.shape(xmat)
+    ypred = np.zeros(m)
+    
+    for i in range(m):
+        ypred[i] = xmat[i] * localWeight(xmat[i], xmat, ymat, k)
+    
+    return ypred
+
+# Load data points
+data = pd.read_csv('10-dataset.csv')
+bill = np.array(data.total_bill)
+tip = np.array(data.tip)
+
+# Preparing and add 1 in bill
+mbill = np.mat(bill)
+mtip = np.mat(tip)
+m = np.shape(mbill)[1]
+one = np.mat(np.ones(m))
+X = np.hstack((one.T, mbill.T))
+
+# Set k here
+ypred = localWeightRegression(X, mtip, 0.5)
+SortIndex = X[:, 1].argsort(0)
+xsort = X[SortIndex][:, 0]
+
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.scatter(bill, tip, color='green')
+ax.plot(xsort[:, 1], ypred[SortIndex], color='red', linewidth=5)
+
+plt.xlabel('Total bill')
+plt.ylabel('Tip')
+plt.show()
+                </code>
+            </div>
+        </div>
+         <div class="code-box">
+        <h3>Build an Artificial Neural Network by implementing the 
+        Backpropagation algorithm and test the same using appropriate data sets</h3>
+            <h4>Code 13</h4>
+            <div class="code">
+                <code>
+# Import Libraries
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
+# Load dataset
+data = load_iris()
+# Get features and target
+X = data.data
+y = data.target
+
+# Get dummy variable
+y = pd.get_dummies(y).values
+y[:3]
+
+# Split data into train and test data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=20, random_state=4)
+
+# Initialize variables
+learning_rate = 0.1
+iterations = 5000
+N = y_train.size
+
+# Number of input features
+input_size = 4
+# Number of hidden layer neurons
+hidden_size = 2
+# Number of neurons at the output layer
+output_size = 3
+
+results = pd.DataFrame(columns=["mse", "accuracy"])
+
+# Initialize weights
+np.random.seed(10)
+# Initializing weight for the hidden layer
+W1 = np.random.normal(scale=0.5, size=(input_size, hidden_size))
+# Initializing weight for the output layer
+W2 = np.random.normal(scale=0.5, size=(hidden_size, output_size))
+
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+
+def mean_squared_error(y_pred, y_true):
+    return ((y_pred - y_true) ** 2).sum() / (2 * y_pred.size)
+
+
+def accuracy(y_pred, y_true):
+    acc = y_pred.argmax(axis=1) == y_true.argmax(axis=1)
+    return acc.mean()
+
+
+for itr in range(iterations):
+    # Feedforward propagation
+    # On hidden layer
+    Z1 = np.dot(X_train, W1)
+    A1 = sigmoid(Z1)
+    # On output layer
+    Z2 = np.dot(A1, W2)
+    A2 = sigmoid(Z2)
+
+    # Calculating error
+    mse = mean_squared_error(A2, y_train)
+    acc = accuracy(A2, y_train)
+    results = results.append({"mse": mse, "accuracy": acc}, ignore_index=True)
+
+    # Backpropagation
+    E1 = A2 - y_train
+    dW1 = E1 * A2 * (1 - A2)
+    E2 = np.dot(dW1, W2.T)
+    dW2 = E2 * A1 * (1 - A1)
+
+    # Weight updates
+    W2_update = np.dot(A1.T, dW1) / N
+    W1_update = np.dot(X_train.T, dW2) / N
+    W2 = W2 - learning_rate * W2_update
+    W1 = W1 - learning_rate * W1_update
+
+results.mse.plot(title="Mean Squared Error")
+results.accuracy.plot(title="Accuracy") 
+                </code>
+            </div>
+         </div>
+        
+ </div>
 </body>
 </html>
