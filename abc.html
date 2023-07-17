@@ -443,6 +443,50 @@ print(sst)
                 </code>
             </div>
          </div>
+         <div class="code-box">
+        <h3>Implementing Agglomerative Clustering in python.</h3>
+            <h4>Code 10</h4>
+            <div class="code">
+                <code>
+   import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.preprocessing import StandardScaler, normalize
+from sklearn.metrics import silhouette_score
+import scipy.cluster.hierarchy as shc
+
+# Changing the working location to the location of the file
+X = pd.read_csv('CC GENERAL.csv')
+
+# Dropping the CUST_ID column from the data
+X = X.drop('CUST_ID', axis=1)
+
+# Handling the missing values
+X.fillna(method='ffill', inplace=True)
+
+# Scaling the data so that all the features become comparable
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Normalizing the data so that the data approximately follows a Gaussian distribution
+X_normalized = normalize(X_scaled)
+
+# Converting the numpy array into a pandas DataFrame
+X_normalized = pd.DataFrame(X_normalized)
+
+pca = PCA(n_components=2)
+X_principal = pca.fit_transform(X_normalized)
+X_principal = pd.DataFrame(X_principal)
+X_principal.columns = ['P1', 'P2']
+
+plt.figure(figsize=(8, 8))
+plt.title('Visualising the data')
+Dendrogram = shc.dendrogram((shc.linkage(X_principal, method='ward')))
+                </code>
+            </div>
+         </div>
     
                 
               
