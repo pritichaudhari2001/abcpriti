@@ -233,6 +233,174 @@ print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
                 </code>
             </div>
          </div>
+        <div class="code-box">
+        <h3>Implement simple KNN using Euclidean distance in python</h3>
+            <h4>Code 5</h4>
+            <div class="code">
+                <code>
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+
+X, y = make_blobs(n_samples=500, n_features=2, centers=4, cluster_std=1.5, random_state=4)
+
+plt.style.use('seaborn')
+plt.figure(figsize=(10, 10))
+plt.scatter(X[:, 0], X[:, 1], c=y, marker='*', s=100, edgecolors='black')
+plt.show()
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+
+knn5 = KNeighborsClassifier(n_neighbors=5)
+knn1 = KNeighborsClassifier(n_neighbors=1)
+
+knn5.fit(X_train, y_train)
+knn1.fit(X_train, y_train)
+
+y_pred_5 = knn5.predict(X_test)
+y_pred_1 = knn1.predict(X_test)
+
+from sklearn.metrics import accuracy_score
+
+print("Accuracy with k=5:", accuracy_score(y_test, y_pred_5) * 100)
+print("Accuracy with k=1:", accuracy_score(y_test, y_pred_1) * 100) 
+                </code>
+            </div>
+        </div>
+        <div class="code-box">
+        <h3>Write a program to implement k-Nearest Neighbour algorithm to classify 
+         the iris dataset. Print both correct and wrong predictions library classes can be used for this problem.</h3>
+            <h4>Code 6</h4>
+            <div class="code">
+                <code>
+import numpy as np
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+
+names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'Class']
+
+# Read dataset to pandas dataframe
+dataset = pd.read_csv("8-dataset.csv", names=names)
+X = dataset.iloc[:, :-1]
+y = dataset.iloc[:, -1]
+
+print(X.head())
+
+Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, test_size=0.10)
+classifier = KNeighborsClassifier(n_neighbors=5).fit(Xtrain, ytrain)
+ypred = classifier.predict(Xtest)
+
+i = 0
+print("\n-------------------------------------------------------------------------")
+print('%-25s %-25s %-25s' % ('Original Label', 'Predicted Label', 'Correct/Wrong'))
+print("-------------------------------------------------------------------------")
+for label in ytest:
+    print('%-25s %-25s' % (label, ypred[i]), end="")
+    if (label == ypred[i]):
+        print(' %-25s' % ('Correct'))
+    else:
+        print(' %-25s' % ('Wrong'))
+    i = i + 1
+
+print("-------------------------------------------------------------------------")
+print("\nConfusion Matrix:\n", metrics.confusion_matrix(ytest, ypred))
+print("-------------------------------------------------------------------------")
+print("\nClassification Report:\n", metrics.classification_report(ytest, ypred))
+print("-------------------------------------------------------------------------")
+print('Accuracy of the classifier is %0.2f' % metrics.accuracy_score(ytest, ypred))
+print("-------------------------------------------------------------------------")   
+                </code>
+            </div>
+        </div>
+         <div class="code-box">
+        <h3>Write a program to implement the naïve Bayesian classifier for a sample 
+        training dataset stored as a .CSV file. Compute the accuracy of the classifier, 
+        considering few test data sets</h3>
+            <h4>Code 7</h4>
+            <div class="code">
+                <code>
+ # Import important libraries
+import numpy as np
+import pandas as pd
+# Import dataset
+from sklearn import datasets
+# Load dataset
+wine = datasets.load_wine()
+# print(wine)  # if you want to see the data you can print data
+# print the names of the 13 features
+print("Features: ", wine.feature_names)
+# print the label type of wine
+print("Labels: ", wine.target_names)
+
+X = pd.DataFrame(wine['data'])
+print(X.head())
+print(wine.data.shape)
+
+# print the wine labels (0:Class_0, 1:class_2, 2:class_2)
+y = print(wine.target)
+
+# Import train_test_split function
+from sklearn.model_selection import train_test_split
+# Split dataset into training set and test set
+X_train, X_test, y_train, y_test = train_test_split(wine.data, wine.target,
+                                                    test_size=0.30, random_state=109)
+
+# Import Gaussian Naive Bayes model
+from sklearn.naive_bayes import GaussianNB
+# Create a Gaussian Classifier
+gnb = GaussianNB()
+# Train the model using the training sets
+gnb.fit(X_train, y_train)
+# Predict the response for test dataset
+y_pred = gnb.predict(X_test)
+print(y_pred)
+
+# Import scikit-learn metrics module for accuracy calculation
+from sklearn import metrics
+# Model Accuracy
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+
+# Confusion matrix
+from sklearn.metrics import confusion_matrix
+cm = np.array(confusion_matrix(y_test, y_pred) ,cm )
+                </code>
+            </div>
+         </div>
+        <div class="code-box">
+        <h3>Write a Program for Confusion Matrix and calculate Precision, Recall, F-
+         Measure.</h3>
+            <h4>Code 8</h4>
+            <div class="code">
+                <code>
+# Import the necessary libraries
+import numpy as np
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Create the NumPy array for actual and predicted labels.
+actual = np.array(['Dog', 'Dog', 'Dog', 'Not Dog', 'Dog', 'Not Dog', 'Dog', 'Dog', 'Not Dog', 'Not Dog'])
+predicted = np.array(['Dog', 'Not Dog', 'Dog', 'Not Dog', 'Dog', 'Dog', 'Dog', 'Dog', 'Not Dog', 'Not Dog'])
+
+# Compute the confusion matrix.
+cm = confusion_matrix(actual, predicted)
+
+# Plot the confusion matrix.
+sns.heatmap(cm, annot=True, fmt='g', xticklabels=['Dog', 'Not Dog'], yticklabels=['Dog', 'Not Dog'])
+plt.ylabel('Prediction', fontsize=13)
+plt.xlabel('Actual', fontsize=13)
+plt.title('Confusion Matrix', fontsize=17)
+plt.show() 
+                </code>
+            </div>
+        </div>
+                   
+                    
 
     </div>
 </body>
